@@ -6,7 +6,7 @@ AI 웹서비스 스터디 (AID-CLUB)
 ``` shell
 python -m venv .env
 
-.env/Scripts/activate
+.env\Scripts\activate
 
 pip insttall -r requirements.txt
 ```
