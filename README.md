@@ -8,5 +8,5 @@ python -m venv .env
 
 .env/Scripts/activate
 
-pip intstall -r requirments.txt
+pip insttall -r requirements.txt
 ```
