@@ -1,2 +1,3 @@
 .env
 myapp/myapp/__pycache__
+.DS_Store
