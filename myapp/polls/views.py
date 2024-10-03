@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
+from django.utils import timezone
 
 from .models import Question
 
@@ -12,6 +13,11 @@ def index(request):
 def get(request):
     message = request.GET.get('abc')
     print(message)
+    if(len(message) > 200):
+        message_cut = message[:200]
+        Question.objects.create(question_text=message_cut, pub_date=timezone.now())
+    else:
+        Question.objects.create(question_text=message, pub_date=timezone.now())
     return HttpResponse(len(message))
 
 def detail(request, question_id):
