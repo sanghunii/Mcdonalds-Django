@@ -26,6 +26,7 @@ def vote(request, question_id):
 
 def get(request):
     message = request.GET.get('abc')
-    print(message)
-    Question.objects.create(question_text=message, pub_date=datetime.now())
-    return HttpResponse(len(message))
+    new_question = Question(question_text=message, pub_date=timezone.now())
+    new_question.save()
+    length=len(message)
+    return HttpResponse(length)
