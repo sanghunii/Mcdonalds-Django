@@ -21,4 +21,6 @@ from django.urls import include, path
 urlpatterns = [
     path("polls/", include("polls.urls")),
     path("admin/", admin.site.urls),
+    ##path('api/', include('rest_framework.urls'))
+    ##위에꺼 추가 해야 한다던데 왜 추가해야 하는지 모르겠음.
 ]
