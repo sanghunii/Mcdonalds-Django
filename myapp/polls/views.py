@@ -67,7 +67,7 @@ def index(request):
     return render(request, "polls/index.html", context)
 
 
-##id를 가져오는게 이상한듯
+
 ##axios를 이용해서 GET API를 사용했을때 params를 이용해서 id를 보내면 
 ##쿼리파라미터가 붙음.
 @api_view(['GET'])
