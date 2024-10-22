@@ -39,12 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'corsheaders'
+    'corsheaders'                       ##CORS
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    "corsheaders.middleware.CorsMiddleware",        ##CORS
+    "django.middleware.common.CommonMiddleware",    ##CORS
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -54,10 +54,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-#CORS추가
-CORS_ORIGIN_WHITELIST = (
+
+CORS_ORIGIN_WHITELIST = (   ##CORS
     'http://127.0.0.1:8000', 'http://localhost:3000')
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True   ##CORS
 
 ROOT_URLCONF = "myapp.urls"
 

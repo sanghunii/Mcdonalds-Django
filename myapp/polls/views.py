@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from .models import Question
 
-#for API
+#for REST - API
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import QuestionSerializer
@@ -14,9 +14,11 @@ from rest_framework import status
 import json
 
 
-
 def index(request):
-    return HttpResponse("안녕안녕?")
+    latest_question_list = Question.objects.order_by("-pub_date")[:5]
+    context = { "latest_question_list": latest_question_list}
+
+    return render(request, "polls/index.html", context)
 
 def detail(request, question_id):
     return HttpResponse("This quesiton ID is %s" % question_id)
@@ -29,6 +31,7 @@ def vote(request, question_id):
     return HttpResponse("안녕안녕 %s." % question_id)
 
 
+##여기가 django-react부분 view 
 def string_length(request):
     #여기서 해야할 일
     # 1. 받아온거 글자 길이 200넘는지 확인 (넘으면 200으로 짤라)
@@ -60,30 +63,35 @@ def string_length(request):
 
 
 
-def index(request):
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
-    context = { "latest_question_list": latest_question_list}
 
-    return render(request, "polls/index.html", context)
 
 
 
 ##axios를 이용해서 GET API를 사용했을때 params를 이용해서 id를 보내면 
 ##쿼리파라미터가 붙음.
+##10월 13일 (일) - GET API요청을 보낼때, 요구한 id에 맞는 contents가 없으면 204 - No Contents 신호를 보내야 하는데 계속 500 server error가 뜬다.
 @api_view(['GET'])
 def get_data(request):
     question_id = request.GET.get('id')
+#.filter(조건) method는 조건에 해당하는 항목이 있으면 해당 데이터를 QuerySet형태로 반환, 없으면 빈 QuerySet을 반환
     question_obj = Question.objects.filter(id=question_id)
     if question_obj.exists():
+
 #QuestionSerializer를 사용할때 다수의 qeuryset을 직렬화 할때는 many=True 파라미터 사용해야함.
-        serializer = QuestionSerializer(Question.objects.get(id=question_id)) #직렬화하고
+#즉 primary key가 아닌 겹칠 수 있는 다른 값을 이용해서 DB를 조회할때는  .get()을 이용해야 할듯
+##get은 filter와 다르게 상황에 따라 여러 exception을 발생시킨다.
+#1. 조회하려는 데이터가 없을때 => DoesNotExist
+#2. 조회하려는 데이터가 여러개일 때 => MultipleObjectsReturned
+        serializer = QuestionSerializer(Question.objects.get(id=question_id)) #serializing
         q_text = serializer.data['question_text']
         q_length = len(serializer.data['question_text'])
-        data={
+        res={
             'text': q_text,
-            'lenth': q_length
+            'length': q_length
         }
-        return Response(data, status=200)
+        return Response(res, status=200)
     else:
-        #204NOContent에러 발생
-        return Response(serializer.error, status=status.HTTP_204_NO_CONTENT)
+        res={
+            '204_no_content': f"there is no content corresponding to {question_id}"
+        }
+        return Response(status=status.HTTP_204_NO_CONTENT)
