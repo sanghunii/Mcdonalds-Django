@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-j9qkp*+gqs68#a%e4e92x0&q3tj7&ue#6&1+dj2wwvm8i^5=j="
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,7 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "polls.apps.PollsConfig",
+    "api.apps.ApiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -39,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "psycopg2",
 ]
 
 MIDDLEWARE = [
@@ -53,8 +59,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CORS_ORIGIN_WHITELIST_FROM = os.environ.get('CORS_ORIGIN_WHITELIST_FROM')
+CORS_ORIGIN_WHITELIST_TO = os.environ.get('CORS_ORIGIN_WHITELIST_TO')
+
 CORS_ORIGIN_WHITELIST = (
-    "http://127.0.0.1:8000", "http://localhost:3000"
+    CORS_ORIGIN_WHITELIST_FROM, CORS_ORIGIN_WHITELIST_TO
 )
 CORS_ALLOW_CREDENTIALS = True
 
@@ -82,12 +91,25 @@ WSGI_APPLICATION = "myapp.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+
+DATABASES_ENGINE=os.environ.get('DATABASES_ENGINE')
+DATABASES_NAME=os.environ.get('DATABASES_NAME')
+DATABASES_USER=os.environ.get('DATABASES_USER')
+DATABASES_PASSWORD=os.environ.get('DATABASES_PASSWORD')
+DATABASES_HOST=os.environ.get('DATABASES_HOST')
+DATABASES_PORT=os.environ.get('DATABASES_PORT_NEW')
+
+DATABASES={
+   'default':{
+      'ENGINE':DATABASES_ENGINE,
+      'NAME':DATABASES_NAME,
+      'USER':DATABASES_USER,
+      'PASSWORD':DATABASES_PASSWORD,
+      'HOST':DATABASES_HOST,
+      'PORT':DATABASES_PORT,
+   }
 }
+
 
 
 # Password validation
@@ -130,3 +152,15 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+
+CELERY_ALWAYS_EAGER = True
+CELERY_BROKER_URL = CELERY_BROKER_URL
+CELERY_RESULT_BACKEND = CELERY_RESULT_BACKEND
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Seoul'
