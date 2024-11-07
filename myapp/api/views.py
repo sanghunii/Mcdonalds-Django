@@ -6,6 +6,8 @@ from .models import Review
 
 from .tasks import predict
 
+import math
+
 @api_view(["POST" ,"GET"])
 def review(request):
     if request.method == "POST":
@@ -25,7 +27,8 @@ def review(request):
         end_id = page * size
         allReviews = Review.objects.all()
         reviews = allReviews[start_id:end_id]
-        maxPage = len(allReviews)
+        numOfReviews = len(allReviews)
+        maxPage = math.ceil(numOfReviews / size)
         result = {'reviews': [{"id": review.id, 
                                "reviewContents":review.reviewContents, 
                                "modelRatings":review.modelRatings} for review in reviews],
@@ -36,8 +39,9 @@ def review(request):
 @api_view(["GET"])
 def review_id(request, reviewId):
     if request.method == "GET":
-        review = Review.objects.get(id = reviewId)
-        if (review.modelRatings) :
+        review = Review.objects.filter(id = reviewId)
+        if (review) :
+            review = review = Review.objects.get(id = reviewId)
             result = {"id": review.id, "reviewContents": review.reviewContents, "modelRatings":review.modelRatings}
             return Response(result, status = status.HTTP_200_OK)
         else :
