@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-j9qkp*+gqs68#a%e4e92x0&q3tj7&ue#6&1+dj2wwvm8i^5=j="
+SECRET_KEY = "django-insecure-j9qkp*+gqs68#a%e4e92x0&q3tj7&ue#6&1+dj2wwvm8i^5=j="                  
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "api.apps.ApiConfig",
     'rest_framework',
     "polls.apps.PollsConfig",
     "django.contrib.admin",
@@ -55,9 +56,12 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ORIGIN_WHITELIST = (   ##CORS
-    'http://127.0.0.1:8000', 'http://localhost:3000')
+
+CORS_ORIGIN_WHITELIST = (   ##CORS                                          
+    'http://127.0.0.1:8000', 'http://localhost:3000')                       
 CORS_ALLOW_CREDENTIALS = True   ##CORS
+
+
 
 ROOT_URLCONF = "myapp.urls"
 
@@ -82,13 +86,17 @@ WSGI_APPLICATION = "myapp.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',             
+        'NAME': 'McDonalds',                                   
+        'USER': 'sanghunii',                                   
+        'PASSWORD': 'genius_hoon556',                          
+        'HOST': 'localhost',                                   
+        'PORT': '5432',                                        
     }
 }
+
 
 
 # Password validation
@@ -131,3 +139,12 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+####settings for Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'                    
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'                
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Seoul'

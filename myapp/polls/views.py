@@ -14,6 +14,7 @@ from rest_framework import status
 import json
 
 
+
 def index(request):
     latest_question_list = Question.objects.order_by("-pub_date")[:5]
     context = { "latest_question_list": latest_question_list}
@@ -94,4 +95,4 @@ def get_data(request):
         res={
             '204_no_content': f"there is no content corresponding to {question_id}"
         }
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(res, status=status.HTTP_204_NO_CONTENT)
