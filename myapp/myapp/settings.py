@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+##Load env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-j9qkp*+gqs68#a%e4e92x0&q3tj7&ue#6&1+dj2wwvm8i^5=j="                  
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -55,11 +60,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CORS_ORIGIN_WHITELIST_FROM=os.getenv('CORS_ORIGIN_WHITELIST_FROM')
+CORS_ALLOW_CREDENTIALS_TO=os.getenv('CORS_ALLOW_CREDENTIALS_TO')
+
+CORS_ORIGIN_WHITELIST = (                                             
+    CORS_ORIGIN_WHITELIST_FROM, CORS_ALLOW_CREDENTIALS_TO)                       
+CORS_ALLOW_CREDENTIALS = True   
 
 
-CORS_ORIGIN_WHITELIST = (   ##CORS                                          
-    'http://127.0.0.1:8000', 'http://localhost:3000')                       
-CORS_ALLOW_CREDENTIALS = True   ##CORS
 
 
 
@@ -83,17 +91,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "myapp.wsgi.application"
 
-
-# Database
+DATABASES_ENGINE=os.getenv('DATABASES_ENGINE')
+DATABASES_NAME=os.getenv('DATABASES_NAME')
+DATABASES_USER=os.getenv('DATABASES_USER')
+DATABASES_PASSWORD=os.getenv('DATABASES_PASSWORD')
+DATABASES_HOST=os.getenv('DATABASES_HOST')
+DATABASES_PORT=os.getenv('DATABASES_PORT')
+# Database-Using postgreSQL
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',             
-        'NAME': 'McDonalds',                                   
-        'USER': 'sanghunii',                                   
-        'PASSWORD': 'genius_hoon556',                          
-        'HOST': 'localhost',                                   
-        'PORT': '5432',                                        
+        'ENGINE': DATABASES_ENGINE,             
+        'NAME': DATABASES_NAME,                                   
+        'USER': DATABASES_USER,                                   
+        'PASSWORD': DATABASES_PASSWORD,                          
+        'HOST': DATABASES_HOST,                                   
+        'PORT': DATABASES_PORT,                                        
     }
 }
 
@@ -142,8 +155,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 ####settings for Celery
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'                    
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'                
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
